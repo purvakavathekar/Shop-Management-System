@@ -1,0 +1,15 @@
+# Ignore sensitive database credentials
+.env
+
+# Ignore generated QR code images
+*.png
+
+# Ignore exported report files
+*.csv
+sales_report.csv
+
+# Ignore Python cache & virtual environment files
+__pycache__/
+*.pyc
+.vscode/
+.idea/

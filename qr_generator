@@ -1,0 +1,27 @@
+import qrcode
+
+while True:
+
+    print("\n===== QR CODE GENERATOR =====")
+
+    pid = input("Enter Product ID: ")
+    name = input("Enter Product Name: ")
+    company = input("Enter Company Name: ")
+    price = input("Enter Price: ")
+    category = input("Enter Category: ")
+
+    data = pid + "|" + name + "|" + company + "|" + price + "|" + category
+
+    img = qrcode.make(data)
+
+    filename = pid + ".png"
+    img.save(filename)
+
+    print("QR Code Generated Successfully")
+    print("Saved as:", filename)
+
+    ch = input("Generate Another QR? (y/n): ")
+
+    if ch.lower() != 'y':
+        print("Thank You")
+        break
