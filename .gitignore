@@ -1,8 +1,8 @@
 # Ignore sensitive database credentials
 .env
 
-# Ignore generated QR code images
-*.png
+# Ignore generated QR code images (Only ignore the backend folder)
+backend/qr_codes/
 
 # Ignore exported report files
 *.csv
