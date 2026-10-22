@@ -1,11 +1,10 @@
+import os
 from db_connection import get_connection
 
 def setup():
-    con = get_connection(use_database=False)
+    # Connect directly to the database specified in your .env / Environment Variables
+    con = get_connection(use_database=True)
     cursor = con.cursor()
-
-    cursor.execute("CREATE DATABASE IF NOT EXISTS shopproject")
-    cursor.execute("USE shopproject")
 
     # Existing Tables
     cursor.execute("""
@@ -17,6 +16,7 @@ def setup():
             stock INT NOT NULL DEFAULT 0
         )
     """)
+    
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS sales(
             sale_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +31,6 @@ def setup():
         )
     """)
     
-    # Matching your existing users table structure
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users(
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,7 +41,7 @@ def setup():
 
     con.commit()
     con.close()
-    print("Database Ready!")
+    print("Database Ready inside target database!")
 
 if __name__ == "__main__":
     setup()
