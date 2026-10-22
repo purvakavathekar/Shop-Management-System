@@ -15,7 +15,7 @@ load_dotenv()
 
 app = FastAPI()
 
-# Enable CORS for all origins so React frontend can communicate with FastAPI
+# Enable CORS once for all origins (supports local dev and live Render frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,25 +24,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-# Allow the React frontend (Vite dev server) to talk to this API
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# MySQL connection settings
-DB_HOST = "localhost"
-DB_USER = "root"
-DB_PASSWORD = "purva@123"
-DB_NAME = "shopproject"
+# Read dynamic MySQL settings from Render Environment Variables (or fallback to local .env)
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = int(os.getenv("DB_PORT", 11342))
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_NAME = os.getenv("DB_NAME", "defaultdb")
 
 QR_FOLDER = "qr_codes"
-
 
 # =====================================================
 # HELPERS
