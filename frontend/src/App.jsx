@@ -8,7 +8,7 @@ import './App.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 // Backend address (must match the address uvicorn prints when it starts)
-const API = 'http://127.0.0.1:8000';
+const API = 'https://shop-management-system-6avu.onrender.com';
 
 // ==========================================
 // Helpers

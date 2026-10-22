@@ -11,7 +11,7 @@ export default function Login() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      const url = isLogin ? 'http://localhost:5000/api/login' : 'http://localhost:5000/api/register';
+      const url = isLogin ? 'https://shop-management-system-6avu.onrender.com/api/login' : 'https://shop-management-system-6avu.onrender.com/api/register';
       const { data } = await axios.post(url, { username, password });
       if (isLogin) {
         localStorage.setItem('user', data.username);
