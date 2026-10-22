@@ -1,16 +1,19 @@
-# 🛒 Shop Management System
+# 🛒 Shop Management System (Web App)
 
-A desktop inventory, billing, and sales management application built with **Python**, **Tkinter**, and **MySQL**. The system streamlines retail operations by integrating item tracking, real-time sales reporting, and automated QR code generation/scanning for seamless checkout processing.
+A full-stack inventory, billing, and sales management web application. Originally built as a Python/Tkinter desktop application, it has been migrated to a modern web architecture featuring a **React (Vite)** frontend and a **FastAPI** backend, connected to a **MySQL** database. 
+
+The system streamlines retail operations by integrating item tracking, real-time sales reporting, and automated QR code generation/scanning directly in the browser.
 
 ---
 
 ## ✨ Features
 
-- 📦 **Inventory Control** — Full CRUD capability for store items with dynamic stock tracking
-- 🔳 **QR Code Integration** — Automated QR code generation for products, with camera-based scanning via OpenCV & PyZbar
-- 🧾 **Billing System** — Real-time cart calculation, itemized order summaries, and transaction logging
-- 📊 **Sales Analytics** — Visual reporting powered by Pandas and Matplotlib to track performance and sales trends
-- 🔐 **Secure Environment** — Environment variable protection using `python-dotenv` to safeguard database credentials
+- 📦 **Inventory Control** — Full CRUD capability for store items with dynamic stock tracking.
+- 🔳 **QR Code Integration** — Automatically generates QR codes for new products (saved in the backend) and uses the browser's webcam to scan them seamlessly.
+- 🧾 **Billing System** — Real-time cart calculation, itemized order summaries, and transaction logging. Stock is deducted immediately upon scanning.
+- 📊 **Sales Analytics** — Interactive visual reporting powered by Chart.js to track performance, category revenue, and sales trends.
+- 🔐 **Authentication** — Secure Login and Registration system.
+- 📱 **Responsive UI** — A modern, dark-themed web interface with custom modals.
 
 ---
 
@@ -18,80 +21,93 @@ A desktop inventory, billing, and sales management application built with **Pyth
 
 | Category | Tools |
 |---|---|
-| Language | Python 3.x |
-| GUI Framework | Tkinter |
-| Database | MySQL |
-| Computer Vision | OpenCV, PyZbar |
-| Data & Visualization | Pandas, Matplotlib |
-| Libraries | `mysql-connector-python`, `python-dotenv`, `qrcode` |
+| **Frontend** | React.js, Vite, Axios, Chart.js, `html5-qrcode` |
+| **Backend** | Python 3.x, FastAPI, Uvicorn, Pydantic |
+| **Database** | MySQL |
+| **Libraries** | `mysql-connector-python`, `python-dotenv`, `qrcode` |
 
 ---
 
 ## 📁 Project Structure
 
-```
-Shop-Management-System/
+```text
+Shop - Management/
 │
-├── .env                  # Database configuration (git-ignored)
-├── .gitignore            # Git exclusion rules
-├── db_connection.py      # Database connection handler
-├── database.py           # Table initialization script
-├── inventory.py          # Inventory management module
-├── billing.py            # Checkout and scanner module
-├── sales.py              # Reports and analytics module
-├── qr_generator.py       # Standalone QR code generator
-├── setup_database.sql    # SQL script to create DB + tables
-├── sample_data.sql       # Optional sample data for testing
-├── requirements.txt      # Python dependencies
-└── main.py                # Main Tkinter application dashboard
-```
+├── backend/                  # FastAPI Backend
+│   ├── __pycache__/          
+│   ├── qr_codes/             # Auto-generated QR code images saved here
+│   ├── venv/                 # Python virtual environment
+│   ├── database.py           # Table initialization script
+│   └── main.py               # FastAPI application & all API routes
+│
+├── frontend/                 # React + Vite Frontend
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/                  # Contains App.jsx, App.css, index.css, etc.
+│   ├── .gitignore
+│   ├── .oxlintrc.json
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   └── vite.config.js
+│
+├── .env                      # Database credentials (git-ignored)
+├── .gitignore                # Git exclusion rules
+├── billing.py                # (Legacy) Desktop billing module
+├── inventory.py              # (Legacy) Desktop inventory module
+├── sales.py                  # (Legacy) Desktop sales module
+├── main.py                   # (Legacy) Main Tkinter dashboard
+├── qr_generator.py           # Standalone QR code generator script
+└── README.md
+🚀 Getting Started
+1️⃣ Set up the Database
+Open MySQL Workbench (or your MySQL command line).
 
----
+Connect to your local server and run the database.py script (located in the backend folder) to create the shopproject database and necessary tables (products, sales, users).
 
-## 🚀 Getting Started
+Ensure your .env file in the root directory has the correct MySQL password.
 
-### 1️⃣ Install dependencies
-```bash
-pip install -r requirements.txt
-```
+2️⃣ Start the Backend (FastAPI)
+Open a terminal and navigate to the backend folder:
 
-### 2️⃣ Set up the database
-Open MySQL Workbench, connect to your local server, then run:
-```
-setup_database.sql
-```
-*(Optional)* Load sample data to test with:
-```
-sample_data.sql
-```
+bash
+cd backend
+Activate your virtual environment:
 
-### 3️⃣ Configure your credentials
-Open `.env` and set your own MySQL password:
-```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_mysql_password_here
-DB_NAME=shopproject
-```
-This file is git-ignored — your credentials stay local and never get pushed to GitHub. 🔒
+Windows: venv\Scripts\activate
 
-### 4️⃣ Run the app
-```bash
-python main.py
-```
-This opens the main dashboard, from which you can launch **Inventory**, **Billing**, or **Sales Analysis**. 🎉
+Mac/Linux: source venv/bin/activate
 
----
+Install dependencies and run the server:
 
-## 🖥️ How It Works
+bash
+pip install fastapi uvicorn mysql-connector-python python-dotenv pydantic qrcode
+python -m uvicorn main:app --reload --port 5000
+The backend will run at http://localhost:5000.
 
-1. Add products manually or scan a QR code to auto-fill product details
-2. Scan products at checkout — stock updates and bill total calculate in real time
-3. Finalize the bill to log the sale to the database
-4. Jump into **Sales Analysis** to view totals, top-selling products, and visual sales trends 📈
+3️⃣ Start the Frontend (React + Vite)
+Open a second terminal and navigate to the frontend folder:
 
----
+bash
+cd frontend
+Install the required packages and start the dev server:
 
-## 👩‍💻 Author
+bash
+npm install
+npm run dev
+The frontend will run at http://localhost:5173.
 
-**Purva Kavathekar**
+🖥️ How It Works
+Login/Register: Open http://localhost:5173 in your browser and create an account or log in.
+
+Manage Inventory: Add products manually (the backend generates a .png QR code saved in the qr_codes folder) or scan an existing QR code using your webcam.
+
+Billing: Scan products or add them manually. The cart updates instantly, and stock is reserved.
+
+Checkout: Finalize the bill to log it to the database and generate a digital receipt. Bill numbers are automatically generated.
+
+Analytics: Jump into the Sales Analysis dashboard to view total revenue, category breakdowns, and interactive bar charts.
+
+👩‍💻 Author
+Purva Kavathekar
