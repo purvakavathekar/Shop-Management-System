@@ -13,11 +13,18 @@ from pydantic import BaseModel
 
 load_dotenv()
 
-app = FastAPI(
-    title="Shop Management System API",
-    description="Backend API for inventory, billing, and sales management",
-    version="2.0.0",
+app = FastAPI()
+
+# Enable CORS for all origins so React frontend can communicate with FastAPI
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+
 
 # Allow the React frontend (Vite dev server) to talk to this API
 app.add_middleware(
