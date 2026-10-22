@@ -12,12 +12,10 @@ from mysql.connector import Error
 from dotenv import load_dotenv
 
 # Load variables from the .env file
-load_dotenv()
-
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "purva@123")
-DB_NAME = os.getenv("DB_NAME", "shopproject")
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = "purva@123"
+DB_NAME = "shopproject"
 
 
 def get_connection(use_database=True):

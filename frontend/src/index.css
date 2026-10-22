@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg-1: #5b4ac4;
+  --bg-2: #3d3190;
+  --panel: #e8e5f8;
+  --panel-2: #dad5f3;
+  --surface: #ffffff;
+  --brand: #6a56d6;
+  --brand-dark: #4b3da8;
+  --ink: #241c52;
+  --muted: #766fa3;
+  --line: #d3cdee;
+  --row-line: #efecfb;
+  --green: #34c58a;
+  --red: #ee5d5d;
+  --orange: #f5a259;
+  --pink: #ef7fb2;
+  --blue: #5aa8ee;
+
+  font-family: 'Nunito', system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%) fixed;
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #8f7cf5;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

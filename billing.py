@@ -177,72 +177,248 @@ def manual_add_to_bill():
 # REMOVE PRODUCT FROM BILL
 # =====================================================
 
+
 def remove_product():
     global bill, grand_total
+
     if not bill:
         messagebox.showinfo("Bill", "Bill is Empty")
         return
 
-    pid = simpledialog.askinteger("Remove Product", "Enter Product ID:")
+    pid = simpledialog.askinteger(
+        "Remove Product",
+        "Enter Product ID:"
+    )
+
     if pid is None:
         return
 
-    con = get_connection()
-    cursor = con.cursor()
-    found = False
+    # Find the product in the bill
+    item = None
 
-    for item in bill:
-        if item[0] == pid:
-            bill.remove(item)
-            grand_total -= item[5]
-            cursor.execute("UPDATE products SET stock = stock + %s WHERE id=%s", (item[4], pid))
-            con.commit()
-            found = True
+    for product in bill:
+        if product[0] == pid:
+            item = product
             break
 
-    con.close()
-    if found:
-        messagebox.showinfo("Removed", "Product Removed Successfully")
-    else:
-        messagebox.showwarning("Not Found", "Product Not Found in Bill")
-
-# =====================================================
-# FINISH BILL
-# =====================================================
-
-def finish_bill():
-    global bill, grand_total
-    if not bill:
-        messagebox.showinfo("Bill", "Bill is Empty")
+    if item is None:
+        messagebox.showwarning(
+            "Not Found",
+            "Product Not Found in Bill"
+        )
         return
 
-    billno = simpledialog.askinteger("Bill Number", "Enter Bill Number:")
-    if billno is None:
+    choice = messagebox.askyesnocancel(
+        "Modify Product",
+        f"Product: {item[1]}\n"
+        f"Current Quantity: {item[4]}\n\n"
+        "Yes = Remove Completely\n"
+        "No = Change Quantity\n"
+        "Cancel = Go Back"
+    )
+
+    if choice is None:
         return
 
     con = get_connection()
     cursor = con.cursor()
 
     try:
+        if choice is True:
+            # Remove the entire product
+            bill.remove(item)
+            grand_total -= item[5]
+
+            cursor.execute(
+                "UPDATE products SET stock = stock + %s WHERE id = %s",
+                (item[4], pid)
+            )
+
+            message = "Product Removed Successfully"
+
+        else:
+            # Ask for the FINAL quantity to keep
+            new_qty = simpledialog.askinteger(
+                "Change Quantity",
+                f"Product: {item[1]}\n"
+                f"Current Quantity: {item[4]}\n"
+                "Enter the quantity you want to keep:",
+                minvalue=0,
+                maxvalue=item[4]
+            )
+
+            if new_qty is None:
+                return
+
+            old_qty = item[4]
+            old_amount = item[5]
+
+            # Calculate price per unit
+            unit_price = old_amount / old_qty
+
+            # Calculate quantity being returned to stock
+            returned_qty = old_qty - new_qty
+
+            cursor.execute(
+                "UPDATE products SET stock = stock + %s WHERE id = %s",
+                (returned_qty, pid)
+            )
+
+            if new_qty == 0:
+                # Zero quantity means remove completely
+                bill.remove(item)
+                grand_total -= old_amount
+
+                message = "Product Removed Successfully"
+
+            else:
+                # Update the bill with the new quantity
+                new_amount = round(new_qty * unit_price, 2)
+
+                item[4] = new_qty
+                item[5] = new_amount
+
+                grand_total -= (old_amount - new_amount)
+
+                message = (
+                    f"Quantity updated successfully!\n"
+                    f"New Quantity: {new_qty}\n"
+                    f"New Amount: ₹{new_amount:.2f}"
+                )
+
+        con.commit()
+
+        messagebox.showinfo("Success", message)
+
+    except Exception as e:
+        con.rollback()
+        messagebox.showerror(
+            "Database Error",
+            f"Could not update product: {e}"
+        )
+
+    finally:
+        cursor.close()
+        con.close()
+
+    # Refresh the bill display here if required.
+
+
+# =====================================================
+# FINISH BILL
+# =====================================================
+
+
+from tkinter import messagebox
+from tkinter.scrolledtext import ScrolledText
+from datetime import datetime
+import tkinter as tk
+
+
+def finish_bill():
+    global bill, grand_total
+
+    if not bill:
+        messagebox.showinfo("Bill", "Bill is Empty")
+        return
+
+    con = get_connection()
+    cursor = con.cursor()
+
+    try:
+        # Generate the next bill number automatically
+        cursor.execute("SELECT COALESCE(MAX(billno), 1000) + 1 FROM sales")
+        billno = cursor.fetchone()[0]
+
+        # Save all products under the same bill number
         for item in bill:
             cursor.execute(
                 """
-                INSERT INTO sales(billno, pid, name, category, qty, amount)
-                VALUES(%s,%s,%s,%s,%s,%s)
+                INSERT INTO sales
+                (billno, pid, name, category, qty, amount)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """,
-                (billno, item[0], item[1], item[2], item[4], item[5])
+                (billno, item[0], item[1], item[2],
+                 item[4], item[5])
             )
 
         con.commit()
-        messagebox.showinfo("Success", f"Bill Saved Successfully\nGrand Total = \u20b9{grand_total}")
+
+        # Prepare receipt
+        receipt_time = datetime.now().strftime("%d-%m-%Y %I:%M:%S %p")
+
+        receipt = []
+        receipt.append("=" * 48)
+        receipt.append("              SHOP BILL RECEIPT")
+        receipt.append("=" * 48)
+        receipt.append(f"Bill Number : {billno}")
+        receipt.append(f"Date        : {receipt_time}")
+        receipt.append("-" * 48)
+        receipt.append(
+            f"{'Product':<22}{'Qty':>5}{'Price':>9}{'Total':>10}"
+        )
+        receipt.append("-" * 48)
+
+        for item in bill:
+            pid, name, category, price, qty, amount = item
+
+            # Wrap long product names if needed
+            receipt.append(
+                f"{name[:21]:<22}{qty:>5}"
+                f"{price:>9.2f}{amount:>10.2f}"
+            )
+
+        receipt.append("-" * 48)
+        receipt.append(f"Grand Total: Rs. {grand_total:.2f}")
+        receipt.append("=" * 48)
+        receipt.append("       Thank you for shopping!")
+        receipt.append("=" * 48)
+
+        receipt_text = "\n".join(receipt)
+
+        # Display receipt in a separate window
+        receipt_window = tk.Toplevel()
+        receipt_window.title(f"Receipt - Bill {billno}")
+        receipt_window.geometry("620x520")
+
+        text_area = ScrolledText(
+            receipt_window,
+            font=("Courier New", 11),
+            wrap=tk.NONE
+        )
+        text_area.pack(
+            fill=tk.BOTH,
+            expand=True,
+            padx=10,
+            pady=10
+        )
+
+        text_area.insert(tk.END, receipt_text)
+        text_area.config(state=tk.DISABLED)
+
+        # Optional: print receipt text in the console
+        print(receipt_text)
+
+        # Clear the current bill only after saving
+        final_total = grand_total 
         bill = []
         grand_total = 0
 
-    except DBError as e:
+        messagebox.showinfo(
+        "Success",
+        f"Bill Saved Successfully!\n"
+        f"Bill Number: {billno}\n"
+        f"Grand Total: Rs. {final_total:.2f}"
+       )
+
+    except Exception as e:
         con.rollback()
         messagebox.showerror("Database Error", str(e))
+
     finally:
+        cursor.close()
         con.close()
+
 
 # =====================================================
 # CLEAR BILL
