@@ -28,7 +28,7 @@ def get_connection(use_database=True):
             "user": DB_USER,
             "password": DB_PASSWORD,
             "connection_timeout": 10,
-            "ssl_disabled": False
+            "ssl_mode": "REQUIRED"
         }
 
         if use_database:

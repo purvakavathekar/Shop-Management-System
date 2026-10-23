@@ -1,12 +1,17 @@
-import os
 from db_connection import get_connection
+import mysql.connector
 
 def setup():
-    # Connect directly to the database specified in your .env / Environment Variables
-    con = get_connection(use_database=True)
+    # 1. Connect without specifying the database first
+    con = get_connection(use_database=False)
     cursor = con.cursor()
 
-    # Existing Tables
+    # 2. Create the database (if it doesn't exist) and select it
+    DB_NAME = "defaultdb" # Or read this from your environment variables
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
+    cursor.execute(f"USE {DB_NAME}")
+
+    # 3. Create tables
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS products(
             id INT PRIMARY KEY,
