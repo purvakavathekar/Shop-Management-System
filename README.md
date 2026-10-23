@@ -1,146 +1,166 @@
 # 🛒 Shop Management System (Web App)
 
-A full-stack inventory, billing, and sales management web application. Originally built as a Python/Tkinter desktop application, it has been completely migrated to a modern web architecture featuring a **React (Vite)** frontend and a **FastAPI** backend, connected to a **MySQL** database.
+A full-stack inventory, billing, and sales management web application. Originally built as a Python/Tkinter desktop application, it has been migrated to a modern web architecture with a **React (Vite)** frontend and a **FastAPI** backend, connected to a **MySQL** database.
 
-The system streamlines retail operations by integrating item tracking, real-time sales reporting, and automated QR code generation/scanning directly in the browser.
-
----
+The system streamlines retail operations by combining item tracking, sales reporting, and automatic QR code generation/scanning directly in the browser.
 
 ## 🌐 Live Demo
 
-- **Frontend:** [https://shop-management-system-1-t53a.onrender.com](https://shop-management-system-1-t53a.onrender.com)
-- **Backend API:** [https://shop-management-system-6avu.onrender.com](https://shop-management-system-6avu.onrender.com)
+- **Frontend:** https://shop-management-system-1-t53a.onrender.com
+- **Backend API:** https://shop-management-system-6avu.onrender.com
 
-*Test Account:*
-- **Username:** `purva`
-- **Password:** `purva123`
-> ⚠️ **Note:** The backend is hosted on Render's free tier, which goes to sleep after 15 minutes of inactivity. The first login attempt might take 50 seconds to wake the server up. If you get an error, just wait a minute and try again.
+**Demo account:**
 
----
+- Username: `demo`
+- Password: `demo123`
+
+> ⚠️ The backend runs on Render's free tier, which goes to sleep after 15 minutes of inactivity. The first request can take up to about 50 seconds while the server wakes up. If you see an error, wait a minute and try again.
+>
+> Please don't store anything sensitive in the demo; its data is public.
 
 ## ✨ Features
 
-- 📦 **Inventory Control** — Full CRUD capability for store items with dynamic stock tracking.
-- 🔳 **QR Code Integration** — Automatically generates QR codes for new products and uses the browser's webcam to scan them seamlessly.
-- 🧾 **Billing System** — Real-time cart calculation, itemized order summaries, and transaction logging. Stock is deducted immediately upon scanning.
-- 📊 **Sales Analytics** — Interactive visual reporting powered by Chart.js to track performance, category revenue, and sales trends.
-- 🔐 **Authentication** — Secure Login and Registration system.
-- 📱 **Responsive UI** — A modern, dark-themed web interface with custom modals.
-
----
+- 📦 **Inventory Control**: add, view, and delete store items with live stock tracking.
+- 🔳 **QR Code Integration**: automatically generates a QR code for each new product and scans codes with the browser's webcam.
+- 🧾 **Billing System**: cart with real-time totals, itemized order summaries, and transaction logging. Stock is updated when items are added to the cart and finalized at checkout.
+- 📊 **Sales Analytics**: bar charts (Chart.js) for revenue by category and by product, plus a full sales history.
+- 🔐 **Authentication**: login and registration system.
+- 📱 **Responsive UI**: a modern purple-themed interface with custom modals that works on desktop and mobile.
 
 ## 🧰 Tech Stack
 
-| Category | Tools |
-|---|---|
-| **Frontend** | React.js, Vite, Axios, Chart.js, `html5-qrcode` |
-| **Backend** | Python 3.x, FastAPI, Uvicorn, Pydantic |
-| **Database** | MySQL (Hosted on Aiven Cloud) |
-| **Libraries** | `mysql-connector-python`, `python-dotenv`, `qrcode` |
-
----
+| Category  | Tools                                                    |
+|-----------|----------------------------------------------------------|
+| Frontend  | React, Vite, Axios, Chart.js (react-chartjs-2), html5-qrcode |
+| Backend   | Python 3.x, FastAPI, Uvicorn, Pydantic                   |
+| Database  | MySQL (hosted on Aiven Cloud)                            |
+| Libraries | mysql-connector-python, python-dotenv, qrcode            |
 
 ## 📁 Project Structure
 
-```text
+```
 Shop - Management/
 │
-├── backend/                  # FastAPI Backend
-│   ├── __pycache__/
-│   ├── qr_codes/             # Auto-generated QR code images saved here
-│   ├── venv/                 # Python virtual environment
-│   ├── ca.pem                # SSL Certificate for Aiven Cloud Database
-│   ├── database.py           # Table initialization script
-│   ├── db_connection.py      # Database connection handler
-│   ├── main.py               # FastAPI application & all API routes
+├── backend/                  # FastAPI backend
+│   ├── qr_codes/             # Auto-generated QR code images are saved here
+│   ├── ca.pem                # Aiven SSL certificate (optional, not required by the current code)
+│   ├── database.py           # Creates the tables (also runs automatically on startup)
+│   ├── db_connection.py      # Database connection handler (reads environment variables)
+│   ├── main.py               # FastAPI application and all API routes
 │   └── requirements.txt      # Backend dependencies
 │
-├── frontend/                 # React + Vite Frontend
-│   ├── node_modules/
+├── frontend/                 # React + Vite frontend
 │   ├── public/
-│   ├── src/                  # Contains App.jsx, App.css, index.css, etc.
+│   ├── src/                  # App.jsx, App.css, index.css, Login.jsx, main.jsx, etc.
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.js
 │
-├── .env                      # Database credentials (git-ignored)
-├── .gitignore                # Git exclusion rules
+├── .env                      # Database credentials (git-ignored, never commit this)
+├── .gitignore
 └── README.md
-🚀 Getting Started (Local Development)
-1️⃣ Set up the Database
-Open MySQL Workbench (or your MySQL command line).
+```
 
-Connect to your local server and run the database.py script (located in the backend folder) to create the shopproject database and necessary tables (products, sales, users).
+## 🚀 Getting Started (Local Development)
 
-Ensure your .env file in the root directory has the correct MySQL password.
+### 1️⃣ Set up the database
 
-2️⃣ Start the Backend (FastAPI)
-Open a terminal and navigate to the backend folder:
+1. Create an empty database in MySQL, for example:
+   ```sql
+   CREATE DATABASE shopproject;
+   ```
+2. Create a `.env` file in the `backend` folder (or the project root) with your connection details:
+   ```
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=your_mysql_password
+   DB_NAME=shopproject
+   ```
+3. The tables (`products`, `sales`, `users`) are created automatically when the backend starts. You can also create them manually by running `python database.py` from the `backend` folder.
 
-bash
+### 2️⃣ Start the backend (FastAPI)
+
+```bash
 cd backend
-Activate your virtual environment:
+```
 
-Windows: venv\Scripts\activate
+Activate a virtual environment:
 
-Mac/Linux: source venv/bin/activate
+- Windows: `python -m venv venv` then `venv\Scripts\activate`
+- Mac/Linux: `python3 -m venv venv` then `source venv/bin/activate`
 
 Install dependencies and run the server:
 
-bash
+```bash
 pip install -r requirements.txt
 python -m uvicorn main:app --reload --port 5000
-The backend will run at http://localhost:5000.
+```
 
-3️⃣ Start the Frontend (React + Vite)
-Open a second terminal and navigate to the frontend folder:
+The backend runs at `http://localhost:5000`.
 
-bash
+### 3️⃣ Start the frontend (React + Vite)
+
+In a second terminal:
+
+```bash
 cd frontend
-Install the required packages and start the dev server:
-
-bash
 npm install
 npm run dev
-The frontend will run at http://localhost:5173.
+```
 
-☁️ Deployment Guide (Render + Aiven)
-This project is configured to be deployed on Render with a cloud MySQL database on Aiven.
+The frontend runs at `http://localhost:5173`.
 
-Backend (Render Web Service)
-Create a Web Service on Render and connect your GitHub repository.
+> **Note:** the frontend currently points to the deployed backend. To use your local backend, change the `API` constant near the top of `frontend/src/App.jsx` from the Render URL to `http://localhost:5000`.
 
-Root Directory: backend
+## ☁️ Deployment Guide (Render + Aiven)
 
-Build Command: pip install -r requirements.txt
+### Database (Aiven MySQL)
 
-Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
+1. Create a MySQL service on Aiven and note the host, **port**, user, password and database name from the Connection information panel. Aiven uses a custom port, not 3306.
+2. In the service settings, make sure **Allowed IP addresses** includes `0.0.0.0/0` (Render's outbound IPs change).
 
-Add your Aiven database credentials as Environment Variables:
+### Backend (Render Web Service)
 
-DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+1. Create a **Web Service** on Render and connect your GitHub repository.
+2. Settings:
+   - **Root Directory:** `backend`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
+3. Add these **Environment Variables**:
 
-Ensure ca.pem is present in the backend folder for SSL connection to Aiven.
+   | Key           | Value                                  |
+   |---------------|----------------------------------------|
+   | `DB_HOST`     | your Aiven host                        |
+   | `DB_PORT`     | your Aiven port (for example `11342`)  |
+   | `DB_USER`     | `avnadmin`                             |
+   | `DB_PASSWORD` | your Aiven password                    |
+   | `DB_NAME`     | `defaultdb`                            |
 
-Frontend (Render Static Site)
-Create a Static Site on Render and connect the same repository.
+4. On the first start, the backend creates the tables automatically. Check the logs for `Database Ready inside target database!`.
 
-Root Directory: Leave blank
+### Frontend (Render Static Site)
 
-Build Command: cd frontend && npm install && npm run build
+1. Create a **Static Site** on Render and connect the same repository.
+2. Settings:
+   - **Root Directory:** leave blank
+   - **Build Command:** `cd frontend && npm install && npm run build`
+   - **Publish Directory:** `frontend/dist`
 
-Publish Directory: frontend/dist
+## 🖥️ How It Works
 
-🖥️ How It Works
-Login/Register: Open the app in your browser and create an account.
+1. **Login / Register:** open the app and create an account.
+2. **Manage Inventory:** add products manually (the backend generates a `.png` QR code) or scan an existing QR code with your webcam.
+3. **Billing:** scan products or add them manually. The cart updates instantly.
+4. **Checkout:** finalize the bill to save it to the database and generate a digital receipt. Bill numbers are generated automatically.
+5. **Analytics:** open the Sales page to see total revenue, category breakdowns, and bar charts.
 
-Manage Inventory: Add products manually (the backend generates a .png QR code) or scan an existing QR code using your webcam.
+## 🔒 Security Notes
 
-Billing: Scan products or add them manually. The cart updates instantly, and stock is reserved.
+- Never commit your `.env` file or database password to GitHub. Keep `.env` in `.gitignore`.
+- Passwords are currently stored as plain text in the `users` table. Before real-world use, hash them (for example with `bcrypt`).
+- CORS is currently open to all origins. For production, restrict `allow_origins` in `main.py` to your frontend URL.
 
-Checkout: Finalize the bill to log it to the database and generate a digital receipt. Bill numbers are automatically generated.
+## 👩‍💻 Author
 
-Analytics: Jump into the Sales Analysis dashboard to view total revenue, category breakdowns, and interactive bar charts.
-
-👩‍💻 Author
 Purva Kavathekar
