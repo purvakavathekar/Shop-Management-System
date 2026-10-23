@@ -44,7 +44,8 @@ def get_db():
         user=DB_USER,
         password=DB_PASSWORD,
         database=DB_NAME,
-        ssl_mode="REQUIRED",  # <--- ADD THIS LINE
+        ssl_ca="ca.pem",  # <--- Point to your downloaded certificate
+        ssl_verify_cert=True, # <--- Enforce verification
         connection_timeout=10,
     )
 
