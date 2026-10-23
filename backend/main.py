@@ -44,6 +44,7 @@ def get_db():
         user=DB_USER,
         password=DB_PASSWORD,
         database=DB_NAME,
+        ssl_mode="REQUIRED",  # <--- ADD THIS LINE
         connection_timeout=10,
     )
 
