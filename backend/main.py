@@ -18,7 +18,7 @@ app = FastAPI()
 # Enable CORS once for all origins (supports local dev and live Render frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://shop-management-system-1-fbkx.onrender.com"],
+    allow_origins=["https://your-new-frontend-url.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
