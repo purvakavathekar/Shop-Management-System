@@ -1,8 +1,20 @@
 # 🛒 Shop Management System (Web App)
 
-A full-stack inventory, billing, and sales management web application. Originally built as a Python/Tkinter desktop application, it has been completely migrated to a modern web architecture featuring a **React (Vite)** frontend and a **FastAPI** backend, connected to a **MySQL** database. 
+A full-stack inventory, billing, and sales management web application. Originally built as a Python/Tkinter desktop application, it has been completely migrated to a modern web architecture featuring a **React (Vite)** frontend and a **FastAPI** backend, connected to a **MySQL** database.
 
 The system streamlines retail operations by integrating item tracking, real-time sales reporting, and automated QR code generation/scanning directly in the browser.
+
+---
+
+## 🌐 Live Demo
+
+- **Frontend:** [https://shop-management-system-1-t53a.onrender.com](https://shop-management-system-1-t53a.onrender.com)
+- **Backend API:** [https://shop-management-system-6avu.onrender.com](https://shop-management-system-6avu.onrender.com)
+
+*Test Account:*
+- **Username:** `purva`
+- **Password:** `purva123`
+> ⚠️ **Note:** The backend is hosted on Render's free tier, which goes to sleep after 15 minutes of inactivity. The first login attempt might take 50 seconds to wake the server up. If you get an error, just wait a minute and try again.
 
 ---
 
@@ -23,7 +35,7 @@ The system streamlines retail operations by integrating item tracking, real-time
 |---|---|
 | **Frontend** | React.js, Vite, Axios, Chart.js, `html5-qrcode` |
 | **Backend** | Python 3.x, FastAPI, Uvicorn, Pydantic |
-| **Database** | MySQL |
+| **Database** | MySQL (Hosted on Aiven Cloud) |
 | **Libraries** | `mysql-connector-python`, `python-dotenv`, `qrcode` |
 
 ---
@@ -37,6 +49,7 @@ Shop - Management/
 │   ├── __pycache__/
 │   ├── qr_codes/             # Auto-generated QR code images saved here
 │   ├── venv/                 # Python virtual environment
+│   ├── ca.pem                # SSL Certificate for Aiven Cloud Database
 │   ├── database.py           # Table initialization script
 │   ├── db_connection.py      # Database connection handler
 │   ├── main.py               # FastAPI application & all API routes
@@ -91,35 +104,37 @@ npm install
 npm run dev
 The frontend will run at http://localhost:5173.
 
-☁️ Deployment Guide (Render)
-This project is configured to be deployed on Render.
+☁️ Deployment Guide (Render + Aiven)
+This project is configured to be deployed on Render with a cloud MySQL database on Aiven.
 
-Backend (Web Service)
+Backend (Render Web Service)
 Create a Web Service on Render and connect your GitHub repository.
 
-Set the Root Directory to backend.
+Root Directory: backend
 
-Set the Build Command to pip install -r requirements.txt.
+Build Command: pip install -r requirements.txt
 
-Set the Start Command to uvicorn main:app --host 0.0.0.0 --port $PORT.
+Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
 
-Add your database credentials as Environment Variables in the Render dashboard (e.g., DB_HOST, DB_USER, DB_PASSWORD, DB_NAME). (Note: localhost will not work on Render; you must use a cloud MySQL database).
+Add your Aiven database credentials as Environment Variables:
 
-Frontend (Static Site)
+DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+
+Ensure ca.pem is present in the backend folder for SSL connection to Aiven.
+
+Frontend (Render Static Site)
 Create a Static Site on Render and connect the same repository.
 
-Set the Root Directory to frontend.
+Root Directory: Leave blank
 
-Set the Build Command to npm install && npm run build.
+Build Command: cd frontend && npm install && npm run build
 
-Set the Publish Directory to dist.
-
-Add an Environment Variable VITE_API_URL and set it to your deployed backend URL.
+Publish Directory: frontend/dist
 
 🖥️ How It Works
 Login/Register: Open the app in your browser and create an account.
 
-Manage Inventory: Add products manually (the backend generates a .png QR code saved in the qr_codes folder) or scan an existing QR code using your webcam.
+Manage Inventory: Add products manually (the backend generates a .png QR code) or scan an existing QR code using your webcam.
 
 Billing: Scan products or add them manually. The cart updates instantly, and stock is reserved.
 
